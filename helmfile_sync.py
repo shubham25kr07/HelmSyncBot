@@ -18,7 +18,18 @@ repo_names_to_deploy_with_master_commit_id = ['dashboard', 'api', 'scrooge', 'te
 
 helmfile_lint_command = 'helmfile lint'
 helmfile_delete_and_sync_command = 'helmfile delete && helmfile sync'
-
+ 
+ 
+def deployWithGivenCommitId():
+   
+   repo_name_with_given_commit_id={}
+   
+   repo_name_with_given_commit_id['dashboard'] = '' 
+   repo_name_with_given_commit_id['api'] = '822992' 
+   repo_name_with_given_commit_id['payment-links'] = '' 
+   
+   return repo_name_with_given_commit_id
+  
 def fetchCommitIdForRepo():
    
    g = Github(github_access_token)
@@ -41,6 +52,7 @@ def updateYAMLfile(repository_names_commit_id):
    
    find_image_after_namespace = False
    update_devstack_label = True
+   repo_name_with_given_commit_id = deployWithGivenCommitId()
    
    for i, line in enumerate(lines):
       
@@ -63,6 +75,10 @@ def updateYAMLfile(repository_names_commit_id):
             commit_id = repository_names_commit_id[trimmed_namespace_value]
             find_image_after_namespace = True
          
+         if (trimmed_namespace_value in repo_name_with_given_commit_id) and (repo_name_with_given_commit_id[trimmed_namespace_value] !=''):
+            commit_id = repo_name_with_given_commit_id[trimmed_namespace_value]
+            find_image_after_namespace =True
+               
       elif find_image_after_namespace == True and "image:" in line:
          lines[i] = f"    - image: {commit_id}\n"
          find_image_after_namespace = False
@@ -93,4 +109,4 @@ repo_name_with_commit_id = fetchCommitIdForRepo()
 updateYAMLfile(repo_name_with_commit_id)
 
 # Run Helmfile command 
-runHelmfileCommand()
+# runHelmfileCommand()
