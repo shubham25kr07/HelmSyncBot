@@ -109,4 +109,4 @@ repo_name_with_commit_id = fetchCommitIdForRepo()
 updateYAMLfile(repo_name_with_commit_id)
 
 # Run Helmfile command 
-# runHelmfileCommand()
+runHelmfileCommand()
